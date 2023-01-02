@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "otherworld",
+  "version": "${version}",
+
+  "name": "Otherworld Mod",
+  "description": "A mod I'm making because I like Celtic mythology.",
+  "authors": [
+    "Voldermirt"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "MIT Licence",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.voldermirt.otherworld.OtherworldMod"
+    ],
+    "client": [
+      "net.voldermirt.otherworld.OtherworldModClient"
+    ]
+  },
+  "mixins": [
+    "otherworld.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.11",
+    "fabric-api": "*",
+    "minecraft": "~1.19.3",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
