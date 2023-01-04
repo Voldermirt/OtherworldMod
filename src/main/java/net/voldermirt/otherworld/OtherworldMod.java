@@ -1,6 +1,9 @@
 package net.voldermirt.otherworld;
 
 import net.fabricmc.api.ModInitializer;
+import net.voldermirt.otherworld.block.ModBlocks;
+import net.voldermirt.otherworld.item.ModItems;
+import net.voldermirt.otherworld.world.feature.ModConfiguredFeatures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,5 +13,9 @@ public class OtherworldMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModConfiguredFeatures.registerConfiguredFeatures();
+
+		ModItems.registerModItems();
+		ModBlocks.registerModBlocks();
 	}
 }

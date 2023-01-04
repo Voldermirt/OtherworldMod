@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "otherworld:veridium_ingot"
+    }
+  },
+  "result": {
+    "item": "otherworld:veridium_block"
+  }
+}

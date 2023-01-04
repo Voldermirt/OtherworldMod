@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "otherworld:veridium_block"
+    }
+  ],
+  "result": {
+    "item": "otherworld:veridium_ingot",
+    "count": 9
+  }
+}
