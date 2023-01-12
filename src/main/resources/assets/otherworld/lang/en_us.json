@@ -1,7 +1,17 @@
 {
   "item.otherworld.raw_veridium": "Raw Veridium",
   "item.otherworld.veridium_ingot": "Veridium Ingot",
+  "item.otherworld.grass_wand": "Grand Wand",
+
+  "item.otherworld.energy": "Energy: %s / %s",
 
   "block.otherworld.veridium_block": "Block of Veridium",
-  "block.otherworld.veridium_one": "Veridium Ore"
+  "block.otherworld.veridium_one": "Veridium Ore",
+  "block.otherworld.druid_altar": "Druid Altar",
+
+  "block.otherworld.druid_altar.title": "Druid Altar",
+  "block.otherworld.druid_altar.charge": "Charge",
+  "block.otherworld.druid_altar.charge_tooltip": "Infuse the item with Nature Energy"
+
+
 }

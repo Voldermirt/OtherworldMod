@@ -14,6 +14,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.voldermirt.otherworld.OtherworldMod;
+import net.voldermirt.otherworld.block.custom.DruidAltarBlock;
 import net.voldermirt.otherworld.item.ModItemGroups;
 
 public class ModBlocks {
@@ -23,6 +24,8 @@ public class ModBlocks {
             new Block(FabricBlockSettings.of(Material.SOLID_ORGANIC).hardness(20).resistance(1000f).requiresTool()), ModItemGroups.OTHERWORLD_ITEMS);
     public static final Block VERIDIUM_ORE = registerBlock("veridium_ore",
             new ExperienceDroppingBlock(FabricBlockSettings.of(Material.STONE).hardness(3).resistance(3f).requiresTool(), UniformIntProvider.create(3, 7)), ModItemGroups.OTHERWORLD_ITEMS);
+    public static final Block DRUID_ALTAR_BLOCK = registerBlock("druid_altar",
+            new DruidAltarBlock(FabricBlockSettings.of(Material.SOLID_ORGANIC).hardness(12).resistance(900f).requiresTool().nonOpaque()), ModItemGroups.OTHERWORLD_ITEMS);
 
 
     private static Block registerBlock(String name, Block block, ItemGroup group) {

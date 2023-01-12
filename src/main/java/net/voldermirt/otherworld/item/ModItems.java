@@ -17,7 +17,7 @@ public class ModItems {
     public static final Item VERIDIUM_INGOT = registerItem("veridium_ingot",
             new Item(new FabricItemSettings()));
     public static final Item GRASS_WAND = registerItem("grass_wand",
-            new GrassWandItem(new FabricItemSettings().maxCount(1)));
+            new GrassWandItem(new FabricItemSettings(), 64));
 
 
     private static Item registerItem(String name, Item item) {

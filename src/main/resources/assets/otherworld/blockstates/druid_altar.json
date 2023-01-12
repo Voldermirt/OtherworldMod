@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "otherworld:block/druid_altar"
+    },
+    "facing=south": {
+      "model": "otherworld:block/druid_altar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "otherworld:block/druid_altar",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "otherworld:block/druid_altar",
+      "y": 90
+    }
+  }
+}

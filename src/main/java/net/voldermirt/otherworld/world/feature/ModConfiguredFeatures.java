@@ -1,32 +1,41 @@
 package net.voldermirt.otherworld.world.feature;
 
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.structure.rule.TagMatchRuleTest;
+import net.fabricmc.fabric.api.biome.v1.*;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.*;
 import net.voldermirt.otherworld.OtherworldMod;
-import net.voldermirt.otherworld.block.ModBlocks;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
+//
+// Thanks to @MBektic on Discord
 public class ModConfiguredFeatures {
-/*
-    private static final TagMatchRuleTest STONE_ORE_REPLACEABLES = new TagMatchRuleTest(BlockTags.STONE_ORE_REPLACEABLES);
 
-    public static final List<OreFeatureConfig.Target> OVERWORLD_VERIDIUM_ORES = List.of(
-            OreFeatureConfig.createTarget(STONE_ORE_REPLACEABLES, ModBlocks.VERIDIUM_ORE.getDefaultState())
-    );
+    public static final RegistryKey<PlacedFeature> VERIDIUM_ORE =
+            RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(OtherworldMod.MOD_ID, "ore_veridium"));
+// This is for the nether, you need 2 more json files.
+//    public static final RegistryKey<PlacedFeature> TANZINTE_ORE_NETHER =
+//            RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(TutorialMod.MOD_ID, "tanzinte_ore_nether"));
 
-    public static final RegistryEntry<ConfiguredFeature<OreFeatureConfig, ?>> VERIDIUM_ORE =
-            ConfiguredFeatures.register();
-
-*/
     public static void registerConfiguredFeatures() {
-        OtherworldMod.LOGGER.debug("Registering Configured Features!");
+        OtherworldMod.LOGGER.debug("Registering ConfiguredFeatures!");
+
+        BiomeModifications.create(new Identifier(OtherworldMod.MOD_ID, "features"))
+                .add( ModificationPhase.ADDITIONS, BiomeSelectors.foundInOverworld(), myOreModifier(VERIDIUM_ORE) )
+        // This is for the nether, you need 2 more json files.
+        //.add( ModificationPhase.ADDITIONS, BiomeSelectors.foundInTheNether(), myOreModifier(TANZINTE_ORE_NETHER) )
+        ;
     }
+
+    private static BiConsumer<BiomeSelectionContext, BiomeModificationContext> myOreModifier(RegistryKey<PlacedFeature> orePlacedFeatureKey) {
+        return (biomeSelectionContext, biomeModificationContext) ->
+                biomeModificationContext.getGenerationSettings()
+                        .addFeature(GenerationStep.Feature.UNDERGROUND_ORES, orePlacedFeatureKey);
+    }
+
+
 }
