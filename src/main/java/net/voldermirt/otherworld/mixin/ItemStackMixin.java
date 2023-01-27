@@ -43,7 +43,6 @@ public abstract class ItemStackMixin implements FabricItemStack {
         list.add(Text.translatable("item.otherworld.energy",
                 getMaxDamage() - getDamage(), getMaxDamage()).formatted(Formatting.GREEN));
         cir.setReturnValue(list);
-
     }
 
 }

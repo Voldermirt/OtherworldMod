@@ -1,0 +1,20 @@
+{
+  "type": "otherworld:druid_altar",
+
+  "primary_ingredient": {
+    "item": "minecraft:stick"
+  },
+
+  "secondary_ingredients": [
+    {
+      "item": "otherworld:veridium_ingot"
+    },
+    {
+      "item": "otherworld:veridium_ingot"
+    }
+  ],
+
+  "output": {
+    "item": "otherworld:grass_wand"
+  }
+}

@@ -30,6 +30,11 @@ public class NatureItem extends Item {
         return true;
     }
 
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return false;
+    }
+
     protected int getEnergy(ItemStack stack) {
         return stack.getMaxDamage() - stack.getDamage();
     }

@@ -4,6 +4,8 @@ import net.fabricmc.api.ModInitializer;
 import net.voldermirt.otherworld.block.ModBlocks;
 import net.voldermirt.otherworld.block.entity.ModBlockEntities;
 import net.voldermirt.otherworld.item.ModItems;
+import net.voldermirt.otherworld.networking.ModMessages;
+import net.voldermirt.otherworld.recipe.ModRecipes;
 import net.voldermirt.otherworld.screen.ModScreenHandlers;
 import net.voldermirt.otherworld.world.feature.ModConfiguredFeatures;
 import org.slf4j.Logger;
@@ -22,5 +24,8 @@ public class OtherworldMod implements ModInitializer {
 
 		ModBlockEntities.registerBlockEntities();
 		ModScreenHandlers.registerScreenHandlers();
+
+		ModRecipes.registerRecipes();
+		ModMessages.registerC2SPackets();
 	}
 }

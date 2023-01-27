@@ -40,14 +40,15 @@ public class DruidAltarScreen extends HandledScreen<DruidAltarScreenHandler> {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (width - backgroundWidth) / 2;
-        int y = (height - backgroundHeight) / 2;
+        // Weird vertical offset, hence the -1
+        int y = ((height - backgroundHeight) / 2) + 1;
         drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight);
 
         renderEnergyBar(matrices, x, y);
     }
 
-    private void renderEnergyBar(MatrixStack matricies, int x, int y) {
-        drawTexture(matricies, x + 160, y + 10, 176, 0, 4, handler.getScaledEnergy());
+    private void renderEnergyBar(MatrixStack matrices, int x, int y) {
+        drawTexture(matrices, x + 160, y + 10, 176, 0, 4, handler.getScaledEnergy());
     }
 
     @Override

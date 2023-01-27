@@ -2,12 +2,15 @@ package net.voldermirt.otherworld.item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.enchantment.MendingEnchantment;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.voldermirt.otherworld.OtherworldMod;
 import net.voldermirt.otherworld.item.custom.GrassWandItem;
+
+
 
 public class ModItems {
 
@@ -27,6 +30,7 @@ public class ModItems {
             entries.add(i);
         });
         return i;
+
     }
 
     public static void registerModItems() {
