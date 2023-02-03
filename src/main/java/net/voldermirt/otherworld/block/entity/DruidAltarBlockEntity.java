@@ -4,7 +4,10 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,6 +16,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
@@ -28,9 +32,10 @@ import net.voldermirt.otherworld.item.custom.NatureItem;
 import net.voldermirt.otherworld.networking.ModMessages;
 import net.voldermirt.otherworld.recipe.DruidAltarRecipe;
 import net.voldermirt.otherworld.screen.DruidAltarScreenHandler;
+import net.voldermirt.otherworld.util.BlockMatcher;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.*;
 
 public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory {
 
@@ -44,17 +49,28 @@ public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreen
     private boolean isOutputFromCrafting = false;
     private DruidAltarScreenHandler handler;
 
+    private BlockMatcher natureBlockMatcher = new BlockMatcher();
+    private static final List<BlockPos> SEARCH_OFFSETS = BlockPos.stream(-2, -2, -2, 2, 2, 2)
+            .filter((pos) -> !(pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0)).map(BlockPos::toImmutable).toList();
+
+    private int ticksPerEnergy = 200;
+    private int energyTimer = ticksPerEnergy;
+
+    private final Timer checkEnergyTicks;
+
     /*
     Properties like progress, etc.
     They go here
     Make sure to set them up properly in the constructor,
     and in the read/writeNbt() methods
      */
-    private int currentEnergy = 32;
+    private int currentEnergy = 0;
     private int maxEnergy = 64;
 
     public DruidAltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.DRUID_ALTAR, pos, state);
+
+
         this.propertyDelegate = new PropertyDelegate() {
 
             @Override
@@ -80,6 +96,43 @@ public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreen
             }
         };
 
+        // Initialize BlockMatcher
+        natureBlockMatcher.addTags(
+                BlockTags.FLOWERS,
+                BlockTags.LOGS,
+                BlockTags.CROPS,
+                BlockTags.CORALS,
+                BlockTags.LEAVES,
+                BlockTags.NYLIUM,
+                BlockTags.SAPLINGS
+        );
+
+        natureBlockMatcher.addMaterials(
+                Material.UNDERWATER_PLANT,
+                Material.BAMBOO,
+                Material.BAMBOO_SAPLING,
+                Material.CACTUS,
+                Material.GOURD,
+                Material.LEAVES,
+                Material.MOSS_BLOCK,
+                Material.ORGANIC_PRODUCT,
+                Material.PLANT,
+                Material.REPLACEABLE_PLANT,
+                Material.SOLID_ORGANIC,
+                Material.UNDERWATER_PLANT
+        );
+
+        natureBlockMatcher.addBlocks(
+                Blocks.GRASS_BLOCK
+        );
+
+        checkEnergyTicks = new Timer("checkEnergyTicks");
+        checkEnergyTicks.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                ticksPerEnergy = getTicksPerEnergy();
+            }
+        }, 1000, 1000);
     }
 
     @Override
@@ -107,6 +160,7 @@ public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreen
 
 
     public static void tick(World world, BlockPos blockPos, BlockState blockState, DruidAltarBlockEntity entity) {
+
 
         if (world.isClient()) return;
 
@@ -144,10 +198,53 @@ public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreen
                 entity.isOutputFromCrafting = false;
             }
             entity.isCompleteRecipePresent = false;
+
         }
 
-        //TODO: Increase energy levels
 
+        //Increase energy levels
+
+        if (entity.ticksPerEnergy == 0) {
+            return;
+        }
+        --entity.energyTimer;
+        if (entity.energyTimer <= 0) {
+            entity.energyTimer = entity.ticksPerEnergy;
+            if (entity.getEnergy() < entity.getMaxEnergy() && entity.ticksPerEnergy > 0) {
+                entity.setEnergy(entity.getEnergy() + 1);
+            }
+        }
+    }
+
+    private int getTicksPerEnergy() {
+        float k = 0.16f;
+        float energyPerSecond = k * getNatureBlockRatio();
+        if (energyPerSecond == 0) {
+            return 0;
+        }
+
+        float secondsPerEnergy = 1 / energyPerSecond;
+
+        return (int)secondsPerEnergy * 20;
+    }
+
+    private float getNatureBlockRatio() {
+        float maxBlocks = 124.0f;
+        Iterator nearbyBlocks = SEARCH_OFFSETS.iterator();
+
+        int blocksFound = 0;
+        Set<Block> uniqueBlocks = new HashSet<>();
+        while (nearbyBlocks.hasNext()) {
+            BlockPos pos = (BlockPos)nearbyBlocks.next();
+
+            BlockState block = world.getBlockState(getPos().add(pos.getX(), pos.getY(), pos.getZ()));
+            if (natureBlockMatcher.matches(block)) {
+                ++blocksFound;
+                uniqueBlocks.add(block.getBlock());
+            }
+        }
+
+        return (blocksFound + (0.5f * uniqueBlocks.size())) / maxBlocks;
     }
 
     @Override
@@ -180,6 +277,7 @@ public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreen
      }
 
     public void infuseItem() {
+
         finalizeCrafting(this);
 
 
@@ -255,11 +353,11 @@ public class DruidAltarBlockEntity extends BlockEntity implements ExtendedScreen
     }
 
     public void setMaxEnergy(int maxEnergy) {
-        this.maxEnergy = maxEnergy;
+        propertyDelegate.set(1, maxEnergy);
     }
 
     public int getMaxEnergy() {
-        return this.maxEnergy;
+        return propertyDelegate.get(1);
     }
 
     public boolean getIsOutputFromCrafting() {
