@@ -21,6 +21,9 @@
     "main": [
       "net.voldermirt.otherworld.OtherworldMod"
     ],
+    "fabric-datagen": [
+      "net.voldermirt.otherworld.datagen.ModDataGen"
+    ],
     "client": [
       "net.voldermirt.otherworld.OtherworldModClient"
     ]
