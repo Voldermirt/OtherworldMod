@@ -13,23 +13,27 @@ import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.registry.tag.WorldPresetTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.world.biome.source.util.VanillaBiomeParameters;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionOptionsRegistryHolder;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.DimensionTypes;
 import net.minecraft.world.gen.WorldPreset;
 import net.minecraft.world.gen.WorldPresets;
-import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
-import net.minecraft.world.gen.chunk.GenerationShapeConfig;
-import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
+import net.minecraft.world.gen.chunk.*;
 import net.minecraft.world.gen.densityfunction.DensityFunctionTypes;
+import net.minecraft.world.gen.densityfunction.DensityFunctions;
 import net.minecraft.world.gen.noise.NoiseRouter;
+import net.minecraft.world.gen.surfacebuilder.VanillaSurfaceRules;
 import net.voldermirt.otherworld.OtherworldMod;
+import net.voldermirt.otherworld.world.gen.ModSurfaceRules;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +52,10 @@ public class ModDimensionGen {
     public static final RegistryKey<ChunkGeneratorSettings> OTHERWORLD_CHUNK_GEN_KEY =
             RegistryKey.of(RegistryKeys.CHUNK_GENERATOR_SETTINGS, new Identifier(OtherworldMod.MOD_ID, "otherworld_chunk_gen"));
 
+
     public static void bootstrapDimension(Registerable<DimensionOptions> ctx) {
-        System.out.println("Registering Otherworld Dimension.");
+        return;
+        /*System.out.println("Registering Otherworld Dimension.");
 
         RegistryEntryLookup<Biome> biomes = ctx.getRegistryLookup(RegistryKeys.BIOME);
         RegistryEntryLookup<DimensionType> dimTypes = ctx.getRegistryLookup(RegistryKeys.DIMENSION_TYPE);
@@ -70,7 +76,7 @@ public class ModDimensionGen {
         );
 
 
-        ctx.register(OTHERWORLD_DIM_KEY, dim);
+        ctx.register(OTHERWORLD_DIM_KEY, null);*/
     }
 
     public static void bootstrapWorldPreset(Registerable<WorldPreset> ctx) {
@@ -113,36 +119,24 @@ public class ModDimensionGen {
         System.out.println("Registering Chunk Generators.");
 
 
-        GenerationShapeConfig shapeConfig = new GenerationShapeConfig(-64, 320, 1, 2);
-        ctx.register(OTHERWORLD_CHUNK_GEN_KEY, new ChunkGeneratorSettings(
-            shapeConfig,
+
+        //GenerationShapeConfig shapeConfig = new GenerationShapeConfig(-64, 320, 1, 2);
+
+        ChunkGeneratorSettings otherworld = new ChunkGeneratorSettings(
+                GenerationShapeConfig.SURFACE,
                 Blocks.STONE.getDefaultState(),
                 Blocks.WATER.getDefaultState(),
-                new NoiseRouter(
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero(),
-                        DensityFunctionTypes.zero()
-                ),
-                null, //TODO: This
-                List.of(),
-                0,
+                DensityFunctions.createSurfaceNoiseRouter(ctx.getRegistryLookup(RegistryKeys.DENSITY_FUNCTION), ctx.getRegistryLookup(RegistryKeys.NOISE_PARAMETERS), false, false),
+                ModSurfaceRules.getSurfaceRules(),
+                (new VanillaBiomeParameters()).getSpawnSuitabilityNoises(),
+                63,
                 false,
-                false,
-                false,
+                true,
+                true,
                 false
-        ));
+        );
+
+        ctx.register(OTHERWORLD_CHUNK_GEN_KEY, otherworld);
     }
 
     private static void registerDimension(Registerable<DimensionOptions> ctx, RegistryKey<DimensionOptions> key, DimensionOptions dim) {

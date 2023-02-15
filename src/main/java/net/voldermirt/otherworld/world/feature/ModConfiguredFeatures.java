@@ -1,41 +1,50 @@
 package net.voldermirt.otherworld.world.feature;
 
 import net.fabricmc.fabric.api.biome.v1.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize;
+import net.minecraft.world.gen.foliage.BlobFoliagePlacer;
+import net.minecraft.world.gen.stateprovider.BlockStateProvider;
+import net.minecraft.world.gen.trunk.ForkingTrunkPlacer;
 import net.voldermirt.otherworld.OtherworldMod;
+import net.voldermirt.otherworld.block.ModBlocks;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-
-//
-// Thanks to @MBektic on Discord
 public class ModConfiguredFeatures {
 
-    public static final RegistryKey<PlacedFeature> VERIDIUM_ORE =
-            RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(OtherworldMod.MOD_ID, "ore_veridium"));
-// This is for the nether, you need 2 more json files.
-//    public static final RegistryKey<PlacedFeature> TANZINTE_ORE_NETHER =
-//            RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(TutorialMod.MOD_ID, "tanzinte_ore_nether"));
+    public static final RegistryKey<ConfiguredFeature<?, ?>> ROWAN_TREE = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, OtherworldMod.id("rowan_tree"));
+    public static final RegistryKey<ConfiguredFeature<?, ?>> ROWAN_SPAWN_KEY = RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, OtherworldMod.id("rowan_spawn"));
 
-    public static void registerConfiguredFeatures() {
-        OtherworldMod.LOGGER.debug("Registering ConfiguredFeatures!");
 
-        BiomeModifications.create(new Identifier(OtherworldMod.MOD_ID, "features"))
-                .add( ModificationPhase.ADDITIONS, BiomeSelectors.foundInOverworld(), myOreModifier(VERIDIUM_ORE) )
-        // This is for the nether, you need 2 more json files.
-        //.add( ModificationPhase.ADDITIONS, BiomeSelectors.foundInTheNether(), myOreModifier(TANZINTE_ORE_NETHER) )
-        ;
+    public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> ctx) {
+        var placedFeatureRegistryEntryLookup = ctx.getRegistryLookup(RegistryKeys.PLACED_FEATURE);
+
+        register(ctx, ROWAN_TREE, Feature.TREE, new TreeFeatureConfig.Builder(
+                BlockStateProvider.of(ModBlocks.ROWAN_LOG),
+                new ForkingTrunkPlacer(5, 6, 3),
+                BlockStateProvider.of(ModBlocks.ROWAN_LEAVES),
+                new BlobFoliagePlacer(ConstantIntProvider.create(3), ConstantIntProvider.create(0), 5),
+                new TwoLayersFeatureSize(1, 0, 2)
+        ).build());
+
+        register(ctx, ROWAN_SPAWN_KEY, Feature.RANDOM_SELECTOR,
+                new RandomFeatureConfig(List.of(new RandomFeatureEntry(placedFeatureRegistryEntryLookup.getOrThrow(ModPlacedFeatures.ROWAN_CHECKED),
+                        0.5f)), placedFeatureRegistryEntryLookup.getOrThrow(ModPlacedFeatures.ROWAN_CHECKED)));
     }
 
-    private static BiConsumer<BiomeSelectionContext, BiomeModificationContext> myOreModifier(RegistryKey<PlacedFeature> orePlacedFeatureKey) {
-        return (biomeSelectionContext, biomeModificationContext) ->
-                biomeModificationContext.getGenerationSettings()
-                        .addFeature(GenerationStep.Feature.UNDERGROUND_ORES, orePlacedFeatureKey);
-    }
 
+    private static <FC extends FeatureConfig, F extends Feature<FC>> void register(Registerable<ConfiguredFeature<?, ?>> ctx,
+                                                                                   RegistryKey<ConfiguredFeature<?, ?>> key, F feature, FC configuration) {
+        ctx.register(key, new ConfiguredFeature<>(feature, configuration));
+    }
 
 }

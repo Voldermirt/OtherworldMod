@@ -1,0 +1,31 @@
+{
+  "variants": {
+    "facing=east,open=false": {
+      "model": "otherworld:block/otherworld_portal_closed"
+    },
+    "facing=east,open=true": {
+      "model": "otherworld:block/otherworld_portal_open",
+      "y": 90
+    },
+    "facing=north,open=false": {
+      "model": "otherworld:block/otherworld_portal_closed"
+    },
+    "facing=north,open=true": {
+      "model": "otherworld:block/otherworld_portal_open"
+    },
+    "facing=south,open=false": {
+      "model": "otherworld:block/otherworld_portal_closed"
+    },
+    "facing=south,open=true": {
+      "model": "otherworld:block/otherworld_portal_open",
+      "y": 180
+    },
+    "facing=west,open=false": {
+      "model": "otherworld:block/otherworld_portal_closed"
+    },
+    "facing=west,open=true": {
+      "model": "otherworld:block/otherworld_portal_open",
+      "y": 270
+    }
+  }
+}

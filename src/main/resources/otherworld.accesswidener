@@ -1,0 +1,5 @@
+accessWidener	v1 named
+accessible method net/minecraft/world/gen/densityfunction/DensityFunctions createSurfaceNoiseRouter (Lnet/minecraft/registry/RegistryEntryLookup;Lnet/minecraft/registry/RegistryEntryLookup;ZZ)Lnet/minecraft/world/gen/noise/NoiseRouter;
+accessible method net/minecraft/entity/Entity getTeleportTarget (Lnet/minecraft/server/world/ServerWorld;)Lnet/minecraft/world/TeleportTarget;
+
+accessible field net/minecraft/world/gen/chunk/GenerationShapeConfig SURFACE Lnet/minecraft/world/gen/chunk/GenerationShapeConfig;

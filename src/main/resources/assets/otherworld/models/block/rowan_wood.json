@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "otherworld:block/rowan_log",
+    "side": "otherworld:block/rowan_log"
+  }
+}

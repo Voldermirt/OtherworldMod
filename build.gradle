@@ -55,6 +55,7 @@ loom {
 			runDir "build/datagen"
 		}
 	}
+	accessWidenerPath = file("src/main/resources/otherworld.accesswidener")
 }
 
 sourceSets { main { resources { srcDirs += dataOutput } } }

@@ -1,13 +1,20 @@
 {
   "item.otherworld.raw_veridium": "Raw Veridium",
   "item.otherworld.veridium_ingot": "Veridium Ingot",
-  "item.otherworld.grass_wand": "Grand Wand",
+  "item.otherworld.grass_wand": "Grass Wand",
 
   "item.otherworld.energy": "Energy: %s / %s",
 
   "block.otherworld.veridium_block": "Block of Veridium",
   "block.otherworld.veridium_ore": "Veridium Ore",
   "block.otherworld.druid_altar": "Druid Altar",
+  "block.otherworld.otherworld_portal": "Otherworld Portal",
+
+  "block.otherworld.rowan_leaves": "Rowan Leaves",
+  "block.otherworld.rowan_log": "Rowan Log",
+  "block.otherworld.rowan_planks": "Rowan Planks",
+  "block.otherworld.rowan_wood": "Rowan Wood",
+  "block.otherworld.rowan_sapling": "Rowan Sapling",
 
   "block.otherworld.druid_altar.title": "Druid Altar",
   "block.otherworld.druid_altar.charge": "Charge",
